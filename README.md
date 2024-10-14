@@ -3,7 +3,7 @@
 
 this python code store you files and code with restore points, work on windows and linux
 
-## --help
+## pp --help
 
 ```bash
 usage: pp.py [-h] [--install] [--version] [--backup [BACKUP]] [--point POINT] [--comment COMMENT]
