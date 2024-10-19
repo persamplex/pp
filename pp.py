@@ -86,7 +86,6 @@ def make_backup(point, comment=None):
         else:
             print("The provided path is neither a file nor a directory.")
         
-        # Update the datasheet
         datasheet_path = os.path.join(pp_folder, 'datasheet.json')
         if not os.path.exists(datasheet_path):
             with open(datasheet_path, 'w') as f:
@@ -160,22 +159,20 @@ def print_point(file_name):
     with open(datasheet_path, 'r') as f:
         datasheet = json.load(f)
 
-    # Header for the table with fixed widths for alignment
     header = f"{'tag':<8} | {'[type] name':<20} | {'date time':<25} | comment"
     print(header)
-    print('-' * len(header))  # separator line
+    print('-' * len(header))
 
     if file_name is None:
         sorted_entries = sorted(datasheet.values(), key=lambda x: (x["date"], x["time"]))
         
         for entry in sorted_entries:
             item_type = '[folder]' if os.path.isdir(entry['source_path']) else '[file]'
-            tag_str = f"{entry['tag']:<8}"  # 8 character width for tag
-            name_str = f"{item_type} {entry['file_name']}".ljust(20)  # 20 character width for name
-            date_str = f"{entry['date']} {entry['time']}".ljust(25)  # 25 character width for date and time
-            comment_str = entry['comment']  # comment field
+            tag_str = f"{entry['tag']:<8}"
+            name_str = f"{item_type} {entry['file_name']}".ljust(20)
+            date_str = f"{entry['date']} {entry['time']}".ljust(25)
+            comment_str = entry['comment'] 
 
-            # Print the formatted row
             print(f"{tag_str} | {name_str} | {date_str} | {comment_str}")
     else:
         matched_entries = [entry for entry in datasheet.values() if entry['file_name'] == file_name]
@@ -185,12 +182,11 @@ def print_point(file_name):
         else:
             for entry in matched_entries:
                 item_type = '[folder]' if os.path.isdir(entry['source_path']) else '[file]'
-                tag_str = f"{entry['tag']:<8}"  # 8 character width for tag
-                name_str = f"{item_type} {entry['file_name']}".ljust(20)  # 20 character width for name
-                date_str = f"{entry['date']} {entry['time']}".ljust(25)  # 25 character width for date and time
-                comment_str = entry['comment']  # comment field
+                tag_str = f"{entry['tag']:<8}"
+                name_str = f"{item_type} {entry['file_name']}".ljust(20)
+                date_str = f"{entry['date']} {entry['time']}".ljust(25)
+                comment_str = entry['comment']
 
-                # Print the formatted row
                 print(f"{tag_str} | {name_str} | {date_str} >> | {comment_str}")
 
 
@@ -262,7 +258,6 @@ def remove_point(tag):
         print(f"No point found with tag {tag}.")
         return
 
-    # Get the file path associated with the tag
     file_path = datasheet[str(tag)]['file_path']
     
     if os.path.isdir(file_path):
@@ -277,10 +272,8 @@ def remove_point(tag):
         print(f"Error while removing folder: {e}")
         return
 
-    # Remove the entry from the datasheet
     del datasheet[str(tag)]
 
-    # Write the updated datasheet back to the file
     with open(datasheet_path, 'w') as f:
         json.dump(datasheet, f, indent=4)
 
@@ -316,12 +309,11 @@ def restore_point(tag):
     source_path = matched_entry['source_path']
     file_path = matched_entry['file_path']
 
-    # Check if the file_path is a directory
     if os.path.isdir(file_path):
         if os.path.exists(source_path):
             for item in os.listdir(source_path):
                 item_path = os.path.join(source_path, item)
-                if item_path != pp_folder:  # Avoid deleting the pp folder
+                if item_path != pp_folder:
                     try:
                         if os.path.isdir(item_path):
                             shutil.rmtree(item_path)
